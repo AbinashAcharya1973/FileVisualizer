@@ -1,0 +1,222 @@
+﻿<Window x:Class="FileVisualizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="File Time Map Visualizer" Height="750" Width="1300"
+        MinHeight="600" MinWidth="900"
+        Background="#0d1117" Foreground="White"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#e6edf3"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+
+        <!-- Primary Button -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#238636"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#2ea043"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#2ea043"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Secondary Button -->
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#21262d"/>
+            <Setter Property="Foreground" Value="#e6edf3"/>
+            <Setter Property="BorderBrush" Value="#363b42"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#30363d"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TextBox Style -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#0d1117"/>
+            <Setter Property="Foreground" Value="#e6edf3"/>
+            <Setter Property="BorderBrush" Value="#30363d"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="2"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header Bar -->
+        <Border Grid.Row="0" Background="#161b22" Padding="20,16" BorderBrush="#21262d" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="📊" FontSize="24" Margin="0,0,10,0"/>
+                    <TextBlock Text="File Time Map" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="40,0" VerticalAlignment="Center">
+                    <TextBlock Text="Folder:" VerticalAlignment="Center" Margin="0,0,10,0" FontSize="13" Foreground="#8b949e"/>
+                    <TextBox x:Name="TxtFolder" Width="400" IsReadOnly="True"/>
+                    <Button Content="Browse" Click="BtnBrowse_Click" Style="{StaticResource SecondaryButton}" Margin="8,0,0,0"/>
+                </StackPanel>
+
+                <Button Grid.Column="2" Content="▶  Load Map" Click="BtnLoad_Click" FontSize="14"/>
+            </Grid>
+        </Border>
+
+        <!-- Filter Bar -->
+        <Border Grid.Row="1" Background="#0d1117" Padding="20,12" BorderBrush="#21262d" BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="13" Foreground="#8b949e"/>
+                <DatePicker x:Name="DpFrom" Width="130" Background="#21262d" BorderBrush="#30363d"/>
+
+                <TextBlock Text="To:" VerticalAlignment="Center" Margin="20,0,8,0" FontSize="13" Foreground="#8b949e"/>
+                <DatePicker x:Name="DpTo" Width="130" Background="#21262d" BorderBrush="#30363d"/>
+
+                <TextBlock Text="Show:" VerticalAlignment="Center" Margin="30,0,8,0" FontSize="13" Foreground="#8b949e"/>
+                <ComboBox x:Name="CmbEventMode" Width="160" Background="#21262d" BorderBrush="#30363d">
+                    <ComboBoxItem Content="Modified &amp; Created" IsSelected="True"/>
+                    <ComboBoxItem Content="Modified Only"/>
+                    <ComboBoxItem Content="Created Only"/>
+                </ComboBox>
+
+                <!-- Legend -->
+                <StackPanel Orientation="Horizontal" Margin="40,0,0,0" VerticalAlignment="Center">
+                    <Border Width="14" Height="14" Background="#39d353" CornerRadius="3" Margin="0,0,6,0"/>
+                    <TextBlock Text="Created" Foreground="#8b949e" FontSize="12" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                    <Border Width="14" Height="14" Background="#0969da" CornerRadius="3" Margin="0,0,6,0"/>
+                    <TextBlock Text="Modified" Foreground="#8b949e" FontSize="12" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Row="2" Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" MinWidth="150" MaxWidth="350"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- File List Panel -->
+            <Border Grid.Column="0" Background="#0d1117" BorderBrush="#21262d" BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="44"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Background="#161b22" Padding="12,0" BorderBrush="#21262d" BorderThickness="0,0,0,1">
+                        <TextBlock Text="📁  Files" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" Foreground="#e6edf3"/>
+                    </Border>
+
+                    <!-- File List - Using Canvas for precise positioning -->
+                    <ScrollViewer Grid.Row="1" x:Name="FileNamesScroll" 
+                                  VerticalScrollBarVisibility="Hidden" 
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  Background="#0d1117">
+                        <Canvas x:Name="FileNamesCanvas" Background="Transparent"/>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Center" 
+                          VerticalAlignment="Stretch" Background="#30363d" Cursor="SizeWE"/>
+
+            <!-- Time Map Area -->
+            <Border Grid.Column="2" Background="#010409">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="44"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Background="#161b22" BorderBrush="#21262d" BorderThickness="0,0,0,1" ClipToBounds="True">
+                        <Canvas x:Name="TimeHeaderCanvas" Height="44" ClipToBounds="False"/>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" x:Name="MapScroll" 
+                                  HorizontalScrollBarVisibility="Auto" 
+                                  VerticalScrollBarVisibility="Auto"
+                                  ScrollChanged="MapScroll_ScrollChanged"
+                                  Background="#010409">
+                        <Canvas x:Name="MapCanvas" Background="Transparent" ClipToBounds="False"/>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="3" Background="#161b22" Padding="16,10" BorderBrush="#21262d" BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="TxtStatus" Text="Select a folder and click Load Map to visualize file activity" 
+                           Foreground="#8b949e" FontSize="12" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="Scroll horizontally to navigate time →" 
+                           Foreground="#484f58" FontSize="11" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
